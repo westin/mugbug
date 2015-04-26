@@ -2,6 +2,7 @@
 #include <avr/power.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
+#include <math.h>
 
 // thermometer vars
 #define THERMOMETER A2
@@ -38,6 +39,16 @@ void loop(void)
   
   colorWipe(ring.Color(255, 0, 0), 50);
   colorWipe(ring.Color(255, 0, 255), 50);
+}
+
+void setRingPercentage(uint8_t percentage) {
+  int lights = round(ring.numPixels() * (percentage * .01));
+  Serial.println(lights, DEC);
+//  for(uint16_t i=0; i<ring.numPixels(); i++) {
+//        ring.setPixelColor(i, ring.Color(255, 0, 255));
+//        ring.show();
+//        delay(100);
+//    }
 }
 
 void colorWipe(uint32_t c, uint8_t wait) {
