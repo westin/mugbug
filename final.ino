@@ -4,6 +4,9 @@
 #include <DallasTemperature.h>
 #include <math.h>
 
+// speaker var
+#define SPEAKER 8
+
 // thermometer vars
 #define THERMOMETER A2
 OneWire oneWire(THERMOMETER);
@@ -53,7 +56,8 @@ int pentReading;
 unsigned long time;
 unsigned long switchTime;
 uint32_t userColor = ring.Color(235,156,49);
-
+int userPixel = 7;
+boolean performedFlurish = false;
 
 void setup(void)
 {
@@ -66,8 +70,10 @@ void setup(void)
   // lightring setup
   ring.begin();
   ring.setBrightness(24);
-  ring.show(); // Initialize all pixels to 'off'
-//  setRingToPercentage(red, 90, blue);
+  ring.show();
+
+  pinMode(SPEAKER, OUTPUT);
+//  playTune();
 }
 
 
@@ -75,19 +81,30 @@ void loop(void)
 { 
   time = millis();
    Serial.println((time - switchTime), DEC);
-  if(abs(findPetentiometerPercentage() - pentReading) > 2){
+  if(abs(findPetentiometerPercentage() - pentReading) > 1){
     pentReading = findPetentiometerPercentage();
     tempSelection();
     switchTime = millis();
+    performedFlurish = false;
   }
   else if((time - switchTime) > 1500){
-    setRingToPercentage(ring.Color(10,0,0), 70, userColor, 30);
-  }
-  // temperature requesting
-//  Serial.print("Requesting temperatures...");
-//  sensors.requestTemperatures();
+    if(performedFlurish == false){
+      fillPixelsFrom(userPixel, userColor);
+      setRingToPercentage(ring.Color(30,0,0), 70, userColor, 30);
+      performedFlurish = true;
+    }
+  Serial.println("Requesting temperatures...");
+  sensors.requestTemperatures();
 //  Serial.println("DONE");
 //  pulseSection(getLightAmountFor(70), ring.numPixels(), blue_arr);
+  Serial.print("Temperature is: ");
+  Serial.print(sensors.getTempFByIndex(0));
+  }
+  // temperature requesting
+//  Serial.println("Requesting temperatures...");
+//  sensors.requestTemperatures();
+////  Serial.println("DONE");
+////  pulseSection(getLightAmountFor(70), ring.numPixels(), blue_arr);
 //  Serial.print("Temperature is: ");
 //  Serial.print(sensors.getTempFByIndex(0));
 
@@ -105,12 +122,22 @@ void loop(void)
 //  dimColor(red, 10);
 }
 
+void buzz(int targetPin, long frequency, long length) {
+  long delayValue = 1000000/frequency/2;
+  long numCycles = frequency * length/ 1000; 
+ for (long i=0; i < numCycles; i++){ 
+    digitalWrite(targetPin,HIGH); 
+    delayMicroseconds(delayValue); 
+    digitalWrite(targetPin,LOW); 
+    delayMicroseconds(delayValue); 
+  }
+}
+
 
 int findPetentiometerPercentage()
 {
     pentVal = analogRead(PENT);
     pentPercentage = (pentVal / 10.22);
-//    Serial.println(pentPercentage, DEC);
     return pentPercentage;
 }
 
@@ -154,6 +181,14 @@ void setRingToPercentage(uint32_t color,uint8_t percentage, uint32_t off_color, 
   }
 }
 
+void playTune()
+{
+    buzz(SPEAKER, 1665, 200);
+    buzz(SPEAKER, 1865, 200);
+    buzz(SPEAKER, 2065, 200);
+    buzz(SPEAKER, 2165, 300);
+}
+
 void tempSelection()
 {
   int perc = findPetentiometerPercentage();
@@ -161,76 +196,92 @@ void tempSelection()
     ring.setPixelColor(1, fade14);
     colorAllPixelsBut(1, dull_white);
     userColor = fade14;
+    userPixel = 1;
+    
   }
   if(perc > 6 && perc < 12){
     ring.setPixelColor(2, fade13);
     colorAllPixelsBut(2, dull_white);
     userColor = fade13;
+    userPixel = 2;
   }
   if(perc > 12 && perc < 20){
     ring.setPixelColor(3, fade12);
     colorAllPixelsBut(3, dull_white);
     userColor = fade12;
+    userPixel = 3;
   }
   if(perc > 20 && perc < 26){
     ring.setPixelColor(4, fade11);
     colorAllPixelsBut(4, dull_white);
     userColor = fade11;
+    userPixel = 4;
   }
   if(perc > 26 && perc < 32){
     ring.setPixelColor(5, fade10);
     colorAllPixelsBut(5, dull_white);
     userColor = fade10;
+    userPixel = 5;
   }
   if(perc > 32 && perc < 40){
     ring.setPixelColor(6, fade9);
     colorAllPixelsBut(6, dull_white);
     userColor = fade9;
+    userPixel =6;
   }
   if(perc > 40 && perc < 47){
     ring.setPixelColor(7, fade8);
     colorAllPixelsBut(7, dull_white);
     userColor = fade8;
+    userPixel = 7;
   }
   if(perc > 47 && perc < 53){
     ring.setPixelColor(8, fade7);
     colorAllPixelsBut(8, dull_white);
     userColor = fade7;
+    userPixel = 8;
   }
   if(perc > 53 && perc < 60){
     ring.setPixelColor(9, fade6);
     colorAllPixelsBut(9, dull_white);
     userColor = fade6;
+    userPixel = 9;
   }
   if(perc > 60 && perc < 66){
     ring.setPixelColor(10, fade5);
     colorAllPixelsBut(10, dull_white);
     userColor = fade5;
+    userPixel = 10;
   }
   if(perc > 66 && perc < 72){
     ring.setPixelColor(11, fade4);
     colorAllPixelsBut(11, dull_white);
     userColor = fade4;
+    userPixel = 11;
   }
   if(perc > 72 && perc < 78){
     ring.setPixelColor(12, fade3);
     colorAllPixelsBut(12, dull_white);
     userColor = fade3;
+    userPixel = 12;
   }
   if(perc > 78 && perc < 86){
     ring.setPixelColor(13, fade2);
     colorAllPixelsBut(13, dull_white);
     userColor = fade2;
+    userPixel = 13;
   }
   if(perc > 86 && perc < 92){
     ring.setPixelColor(14, fade1);
     colorAllPixelsBut(14, dull_white);
     userColor = fade1;
+    userPixel = 14;
   }
   if(perc > 92){
     ring.setPixelColor(15, fade0);
     colorAllPixelsBut(15, dull_white);
     userColor = fade0;
+    userPixel = 15;
   }
   ring.show();
 }
@@ -248,5 +299,14 @@ void fullColor(uint32_t c) {
   for(uint16_t i=0; i<ring.numPixels(); i++) {
       ring.setPixelColor(i, c);
       ring.show();
+  }
+}
+
+void fillPixelsFrom(int start, uint32_t color)
+{
+  for(uint16_t i = start; i < 16; i++) {
+      ring.setPixelColor(i, color);
+      ring.show();
+      delay(30);
   }
 }
