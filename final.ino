@@ -81,6 +81,7 @@ void loop(void)
   time = millis();
 //   Serial.println((time - switchTime), DEC);
 //  Serial.println(round(desiredTemp/currTemp) * 100);
+
   if(abs(findPetentiometerPercentage() - pentReading) > 2){
     pentReading = findPetentiometerPercentage();
     tempSelection();
@@ -93,11 +94,28 @@ void loop(void)
       sensors.requestTemperatures();
       currTemp = sensors.getTempFByIndex(0);
       
-      fillPixelsFrom(userPixel, userColor);
-      setRingToPercentage(ring.Color(30,0,0), 100 - round((desiredTemp - 100)/(currTemp - 100) * 100), userColor, 30);
+      if(currTemp < 100){
+        drawSmile();
+      }
+      else if(desiredTemp >= currTemp && currTemp >= 90){
+        sensors.requestTemperatures();
+        float tempAgo = sensors.getTempFByIndex(0);
+        delay(2000);
+        sensors.requestTemperatures();
+        float nowTemp = sensors.getTempFByIndex(0);
+        if(desiredTemp >= currTemp && currTemp >= 80 && tempAgo >= nowTemp){
+          rainbowCycle(2);
+          rainbowCycle(2);
+          rainbowCycle(2);
+        }
+      }
+      else{
+        fillPixelsFrom(userPixel, userColor);
+        setRingToPercentage(ring.Color(30,0,0), 100 - round((desiredTemp - 100)/(currTemp - 100) * 100), userColor, 30);
+      }
       performedFlurish = true;
     }
-   if((time % 5000) == 0){
+   if((time % 1000) == 0){
 //      Serial.println("Requesting temperatures...");
       sensors.requestTemperatures();
       currTemp = sensors.getTempFByIndex(0);
@@ -110,7 +128,24 @@ void loop(void)
       Serial.println(desiredTemp, DEC);
       Serial.print("Rounded that makes: ");
       Serial.println(round((desiredTemp - 100)/(currTemp - 100) * 100));
-      setRingToPercentage(ring.Color(30,0,0), 100 - round((desiredTemp - 100)/(currTemp - 100) * 100), userColor, 30);
+      if(currTemp < 100){
+        drawSmile();
+      }
+      else if(desiredTemp >= currTemp && currTemp >= 90){
+        sensors.requestTemperatures();
+        float tempAgo = sensors.getTempFByIndex(0);
+        delay(2000);
+        sensors.requestTemperatures();
+        float nowTemp = sensors.getTempFByIndex(0);
+        if(desiredTemp >= currTemp && currTemp >= 80 && tempAgo >= nowTemp){
+          rainbowCycle(2);
+          rainbowCycle(2);
+          rainbowCycle(2);
+        }
+      }
+      else{
+        setRingToPercentage(ring.Color(30,0,0), 100 - round((desiredTemp - 100)/(currTemp - 100) * 100), userColor, 30);
+      }
    }
   }
   // temperature requesting
@@ -135,6 +170,29 @@ void loop(void)
 //  dimColor(red, 10);
 }
 
+void drawSmile()
+{
+  for(uint16_t i= 0; i < ring.numPixels(); i = i+ 2){
+    ring.setPixelColor(i, userColor);
+    ring.show();
+    delay(200);
+  }
+  for(uint16_t i= 1; i < ring.numPixels(); i = i+ 2){
+    ring.setPixelColor(i, userColor);
+    ring.show();
+    delay(200);
+  }
+  for(uint16_t i= 0; i < ring.numPixels(); i = i+ 2){
+    ring.setPixelColor(i, ring.Color(0, 0, 0));
+    ring.show();
+    delay(200);
+  }
+  for(uint16_t i= 1; i < ring.numPixels(); i = i+ 2){
+    ring.setPixelColor(i, ring.Color(0, 0, 0));
+    ring.show();
+    delay(200);
+  }
+}
 int findPetentiometerPercentage()
 {
     pentVal = analogRead(PENT);
@@ -316,5 +374,38 @@ void fillPixelsFrom(int start, uint32_t color)
       ring.setPixelColor(i, color);
       ring.show();
       delay(30);
+  }
+}
+
+void rainbowCycle(uint8_t wait) {
+  uint16_t i, j;
+
+  for(j=0; j<256*5; j++) { // 5 cycles of all colors on wheel
+    for(i=0; i< ring.numPixels(); i++) {
+      ring.setPixelColor(i, Wheel(((i * 256 / ring.numPixels()) + j) & 255));
+    }
+    ring.show();
+    delay(wait);
+  }
+}
+
+uint32_t Wheel(byte WheelPos) {
+  WheelPos = 255 - WheelPos;
+  if(WheelPos < 85) {
+   return ring.Color(255 - WheelPos * 3, 0, WheelPos * 3);
+  } else if(WheelPos < 170) {
+    WheelPos -= 85;
+   return ring.Color(0, WheelPos * 3, 255 - WheelPos * 3);
+  } else {
+   WheelPos -= 170;
+   return ring.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
+  }
+}
+
+void colorWipe(uint32_t c, uint8_t wait) {
+  for(uint16_t i=0; i<ring.numPixels(); i++) {
+      ring.setPixelColor(i, c);
+      ring.show();
+      delay(wait);
   }
 }
