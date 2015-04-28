@@ -4,20 +4,17 @@
 #include <DallasTemperature.h>
 #include <math.h>
 
-// speaker var
-#define SPEAKER 8
-
 // thermometer vars
-#define THERMOMETER A2
+#define THERMOMETER A3
 OneWire oneWire(THERMOMETER);
 DallasTemperature sensors(&oneWire);
 
 //lightring vars
-#define LIGHT_RING 6
+#define LIGHT_RING 13
 Adafruit_NeoPixel ring = Adafruit_NeoPixel(16, LIGHT_RING, NEO_GRB + NEO_KHZ800);
 
 // pententiometer vars
-#define PENT A6
+#define PENT A1
 int pentVal = 0;
 int pentPercentage = 0;
 
@@ -76,8 +73,6 @@ void setup(void)
   ring.setBrightness(15);
   ring.show();
 
-  pinMode(SPEAKER, OUTPUT);
-//  playTune();
 }
 
 
@@ -140,18 +135,6 @@ void loop(void)
 //  dimColor(red, 10);
 }
 
-void buzz(int targetPin, long frequency, long length) {
-  long delayValue = 1000000/frequency/2;
-  long numCycles = frequency * length/ 1000; 
- for (long i=0; i < numCycles; i++){ 
-    digitalWrite(targetPin,HIGH); 
-    delayMicroseconds(delayValue); 
-    digitalWrite(targetPin,LOW); 
-    delayMicroseconds(delayValue); 
-  }
-}
-
-
 int findPetentiometerPercentage()
 {
     pentVal = analogRead(PENT);
@@ -197,14 +180,6 @@ void setRingToPercentage(uint32_t color,uint8_t percentage, uint32_t off_color, 
         ring.show();
         delay(wait);
   }
-}
-
-void playTune()
-{
-    buzz(SPEAKER, 1665, 200);
-    buzz(SPEAKER, 1865, 200);
-    buzz(SPEAKER, 2065, 200);
-    buzz(SPEAKER, 2165, 300);
 }
 
 void tempSelection()
