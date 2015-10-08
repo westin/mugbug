@@ -1,6 +1,7 @@
 # mugbug
 *an old hacky project that im putting up here for archival reasons*
 
+![mugbug in reality](http://i.imgur.com/8MW3Pqq.gif)
 
 ### WHAT
 you know how when you brew tea you never know when it's a good temperature to drink? or how when you wait too long to drink it and it's too cold? drink too soon and you burn your mouth! this project was the solution:
@@ -13,3 +14,5 @@ it was for a class at carnegie mellon: gadgets, sensors, and activity recognitio
  
 ### CLOSING THOUGHTS
 this code is not pretty. i am sorry. 
+
+![rainbow!!!!!!](http://i.imgur.com/FFXOGU2.gif)
