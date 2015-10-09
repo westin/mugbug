@@ -9,6 +9,9 @@ you know how when you brew tea you never know when it's a good temperature to dr
  * mugbug would rest on the edge of your mug, displaying the time remaining until the optimal temperature to drink, adjustable by the user with the dial (aka potentiometer) in the center. 
  * when mugbug knows it's OK to drink, the lights flash and make a rainbow pattern.
 
+
+![mugbug in its home](http://i.imgur.com/7OI2grW.gif)
+
 ### WHY
 it was for a class at carnegie mellon: gadgets, sensors, and activity recognition (05-833). i got an A so that's sweet. anyway-- i never worked on it again so i'm just putting the code up here for the historians.
  
